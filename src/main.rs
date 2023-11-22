@@ -1,11 +1,7 @@
 mod instruction;
 mod parser;
 
-use crate::instruction::Funct::*;
-use crate::instruction::RegisterName::*;
-use crate::instruction::OpCode::*;
-use crate::instruction::Instruction::*;
-use crate::instruction::*;
+use crate::instruction::Instruction;
 use crate::instruction::ConvertToBinary;
 
 use crate::parser::parse;

@@ -5,7 +5,6 @@ use std::str::FromStr;
 use crate::instruction::Funct::*;
 use crate::instruction::RegisterName::*;
 use crate::instruction::OpCode::*;
-use crate::instruction::Instruction::*;
 use crate::instruction::*;
 
 pub fn parse(filename: &str) -> Vec<Instruction> {
@@ -14,7 +13,7 @@ pub fn parse(filename: &str) -> Vec<Instruction> {
 
     for line in read_to_string(filename).unwrap().lines() {
         let line = line.to_string();
-        let mut line_splited = line.split(":").collect::<Vec<&str>>();
+        let line_splited = line.split(":").collect::<Vec<&str>>();
 
         // 빈 행일 때 건너뛰기
         if line_splited[0].len() == 0 {
@@ -69,7 +68,7 @@ fn parse_code(code: &[&str]) -> Instruction {
         "mult" => parse_mult(operand),
         "multu" => parse_multu(operand),
         "sra" => parse_sra(operand),
-        "syscall" => parse_syscall(operand),
+        "syscall" => parse_syscall(),
 
         "addi" => parse_addi(operand),
         "addiu" => parse_addiu(operand),
@@ -220,7 +219,7 @@ fn parse_sra(operand: &[&str]) -> Instruction {
     RFormat::new(Sra, ZERO, rt, rd, shamt)
 }
 
-fn parse_syscall(operand: &[&str]) -> Instruction {
+fn parse_syscall() -> Instruction {
     RFormat::new(Syscall, ZERO, ZERO, ZERO, 0)
 }
 
