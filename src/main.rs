@@ -38,6 +38,9 @@ fn write_binary_file(instructions: &[Instruction]) -> Result<(), std::io::Error>
 fn main() {
     let filename = std::env::args().nth(1).expect("no filename");
     let instructions = parse(&filename);
+    for inst in &instructions {
+        println!("{:?}", inst);
+    }
 
     println!("write binary file");
     println!("--------");

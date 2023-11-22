@@ -139,26 +139,45 @@ pub struct IFormat {
     opcode: OpCode,
     rs: RegisterName,
     rt: RegisterName,
-    immediate: i16,
+    immediate: ImmediateOrLabel,
 }
+
+#[allow(dead_code)]
+#[derive(Debug)]
+enum ImmediateOrLabel {
+    Immediate(i16),
+    Label(String),
+}
+
+use ImmediateOrLabel::*;
 
 #[allow(dead_code)]
 impl IFormat {
     pub fn new(opcode: OpCode, rs: RegisterName, rt: RegisterName,
         immediate: i16) -> Instruction {
-        I(IFormat {opcode, rs, rt, immediate})
+        I(IFormat {opcode, rs, rt, immediate: Immediate(immediate)})
+    }
+
+    pub fn new_branch(opcode: OpCode, rs: RegisterName, rt: RegisterName,
+        label: String) -> Instruction {
+        I(IFormat {opcode, rs, rt, immediate: Label(label)})
     }
 }
 
 #[allow(dead_code)]
 impl ConvertToBinary for IFormat {
     fn convert(&self) -> u32 {
-        let mut instruction: u32;
-        instruction = (self.opcode as u32 & 0b111111) << 26;
-        instruction |= (self.rs as u32 & 0b11111) << 21;
-        instruction |= (self.rt as u32 & 0b11111) << 16;
-        instruction |= (self.immediate as u16 as u32) << 0;
-        instruction
+        match self.immediate {
+            Immediate(immediate) => {
+                let mut instruction: u32;
+                instruction = (self.opcode as u32 & 0b111111) << 26;
+                instruction |= (self.rs as u32 & 0b11111) << 21;
+                instruction |= (self.rt as u32 & 0b11111) << 16;
+                instruction |= (immediate as u16 as u32) << 0;
+                instruction
+            }
+            _ => panic!("label must be replaced to address"),
+        }
     }
 }
 
