@@ -43,6 +43,8 @@ pub fn parse(filename: &str) -> Vec<Instruction> {
         println!("{} {}", k, v);
     }
 
+    // parse_address(&mut instructions, &label_to_address);
+
     instructions
 }
 
@@ -250,14 +252,14 @@ fn parse_beq(operand: &[&str]) -> Instruction {
     let rt = parse_register(operand[0]);
     let rs = parse_register(operand[1]);
     let label = operand[2].to_string();
-    IFormat::new_branch(Beq, rs, rt, label)
+    IFormat::new_label(Beq, rs, rt, label)
 }
 
 fn parse_bne(operand: &[&str]) -> Instruction {
     let rt = parse_register(operand[0]);
     let rs = parse_register(operand[1]);
     let label = operand[2].to_string();
-    IFormat::new_branch(Bne, rs, rt, label)
+    IFormat::new_label(Bne, rs, rt, label)
 }
 
 fn parse_lbu(operand: &[&str]) -> Instruction {
@@ -326,13 +328,13 @@ fn parse_sw(operand: &[&str]) -> Instruction {
 //////// parse j format ////////
 
 fn parse_j(operand: &[&str]) -> Instruction {
-    let address = u32::from_str(operand[0]).unwrap();
-    JFormat::new(Jump, address)
+    let label = operand[0].to_string();
+    JFormat::new_label(Jump, label)
 }
 
 fn parse_jal(operand: &[&str]) -> Instruction {
-    let address = u32::from_str(operand[0]).unwrap();
-    JFormat::new(Jal, address)
+    let label = operand[0].to_string();
+    JFormat::new_label(Jal, label)
 }
 
 fn parse_register(register: &str) -> RegisterName {

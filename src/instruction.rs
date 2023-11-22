@@ -149,18 +149,16 @@ enum ImmediateOrLabel {
     Label(String),
 }
 
-use ImmediateOrLabel::*;
-
 #[allow(dead_code)]
 impl IFormat {
     pub fn new(opcode: OpCode, rs: RegisterName, rt: RegisterName,
         immediate: i16) -> Instruction {
-        I(IFormat {opcode, rs, rt, immediate: Immediate(immediate)})
+        I(IFormat {opcode, rs, rt, immediate: ImmediateOrLabel::Immediate(immediate)})
     }
 
-    pub fn new_branch(opcode: OpCode, rs: RegisterName, rt: RegisterName,
+    pub fn new_label(opcode: OpCode, rs: RegisterName, rt: RegisterName,
         label: String) -> Instruction {
-        I(IFormat {opcode, rs, rt, immediate: Label(label)})
+        I(IFormat {opcode, rs, rt, immediate: ImmediateOrLabel::Label(label)})
     }
 }
 
@@ -168,7 +166,7 @@ impl IFormat {
 impl ConvertToBinary for IFormat {
     fn convert(&self) -> u32 {
         match self.immediate {
-            Immediate(immediate) => {
+            ImmediateOrLabel::Immediate(immediate) => {
                 let mut instruction: u32;
                 instruction = (self.opcode as u32 & 0b111111) << 26;
                 instruction |= (self.rs as u32 & 0b11111) << 21;
@@ -185,22 +183,38 @@ impl ConvertToBinary for IFormat {
 #[derive(Debug)]
 pub struct JFormat {
     opcode: OpCode,
-    address: u32,
+    address: AddressOrLabel,
+}
+
+#[allow(dead_code)]
+#[derive(Debug)]
+enum AddressOrLabel {
+    Address(u32),
+    Label(String),
 }
 
 #[allow(dead_code)]
 impl JFormat {
     pub fn new(opcode: OpCode, address: u32) -> Instruction {
-        J(JFormat {opcode, address})
+        J(JFormat {opcode, address: AddressOrLabel::Address(address)})
+    }
+
+    pub fn new_label(opcode: OpCode, label: String) -> Instruction {
+        J(JFormat {opcode, address: AddressOrLabel::Label(label)})
     }
 }
 
 impl ConvertToBinary for JFormat {
     fn convert(&self) -> u32 {
-        let mut instruction: u32;
-        instruction = (self.opcode as u32 & 0b111111) << 26;
-        instruction |= (self.address & 0x03FFFFFF) << 0;
-        instruction
+        match self.address {
+            AddressOrLabel::Address(address) => {
+                let mut instruction: u32;
+                instruction = (self.opcode as u32 & 0b111111) << 26;
+                instruction |= (address & 0x03FFFFFF) << 0;
+                instruction
+            },
+            _ => panic!("label must be replaced to address"),
+        }
     }
 }
 
