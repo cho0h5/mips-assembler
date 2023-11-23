@@ -14,5 +14,5 @@ Cargo.lock
 *.pdb
 
 mipsvm
-
 example.bin
+mips-assembler
