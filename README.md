@@ -1,4 +1,23 @@
-# mips-assembler
+# Build and Execute
+## Prerequirement
+- Rust (https://www.rust-lang.org/learn/get-started)
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+## Build
+```sh
+git clone git@github.com:cho0h5/mips-assembler.git
+cd mips-assembler
+cargo build --release
+mv target/release/mips-assembler .
+```
+## Execute
+```sh
+./mips-assembler factorial6.s
+```
+Then, you can generate example.bin!
+## Run binary code
+Go to https://github.com/cho0h5/mips-simulator
 
 # Grammer
 ```
