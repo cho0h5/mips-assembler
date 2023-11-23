@@ -6,7 +6,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 ## Build
 ```sh
-git clone git@github.com:cho0h5/mips-assembler.git
+git clone https://github.com/cho0h5/mips-assembler.git
 cd mips-assembler
 cargo build --release
 mv target/release/mips-assembler .
