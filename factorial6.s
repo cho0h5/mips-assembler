@@ -1,4 +1,4 @@
-		addi $a0   $zero 4
+		addi $a0   $zero 6
 		jal fact
 		add $a0 $v0 $zero
 		addi $v0 $zero 1
