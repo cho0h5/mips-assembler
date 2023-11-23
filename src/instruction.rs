@@ -136,7 +136,7 @@ impl ConvertToBinary for RFormat {
 }
 
 impl LabelToAddress for RFormat {
-    fn label_to_address(&mut self, table: &HashMap<String, u32>) {
+    fn label_to_address(&mut self, _table: &HashMap<String, u32>) {
     }
 }
 
