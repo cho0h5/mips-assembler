@@ -33,15 +33,17 @@ fn write_binary_file(instructions: &[Instruction]) -> Result<(), std::io::Error>
 
 fn main() {
     let filename = std::env::args().nth(1).expect("no filename");
+
+    println!("---- parse assembly file ----");
     let instructions = parse(&filename);
     for inst in &instructions {
         println!("{:?}", inst);
     }
+    println!("-----------------------------\n");
 
-    println!("write binary file");
-    println!("--------");
+    println!("---- write binary file ----");
     if let Ok(_) = write_binary_file(&instructions) {
-        println!("--------");
+        println!("---------------------------\n");
         println!("done");
     } else {
         println!("failed");

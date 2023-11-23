@@ -39,10 +39,6 @@ pub fn parse(filename: &str) -> Vec<Instruction> {
         }
     }
 
-    for (k, v) in &label_to_address {
-        println!("{} {}", k, v);
-    }
-
     parse_address(&mut instructions, &label_to_address);
 
     instructions
@@ -395,10 +391,10 @@ fn parse_offset(offset: &str) -> (i16, RegisterName) {
 use Instruction::*;
 
 fn parse_address(instructions: &mut Vec<Instruction>, table: &HashMap<String, u32>) {
-    for instruction in instructions.iter_mut() {
+    for (i, instruction) in instructions.iter_mut().enumerate() {
         match instruction {
-            // I(iformat) => parse_address_i(iformat, label_to_address),
-            J(jformat) => jformat.label_to_address(&table),
+            I(iformat) => iformat.label_to_address(i as u32, &table),
+            J(jformat) => jformat.label_to_address(i as u32, &table),
             _ => (),
         }
     }

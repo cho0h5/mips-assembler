@@ -136,7 +136,7 @@ impl ConvertToBinary for RFormat {
 }
 
 impl LabelToAddress for RFormat {
-    fn label_to_address(&mut self, _table: &HashMap<String, u32>) {
+    fn label_to_address(&mut self, _current_address: u32, _table: &HashMap<String, u32>) {
     }
 }
 
@@ -187,7 +187,17 @@ impl ConvertToBinary for IFormat {
 }
 
 impl LabelToAddress for IFormat {
-    fn label_to_address(&mut self, table: &HashMap<String, u32>) {
+    fn label_to_address(&mut self, current_address: u32, table: &HashMap<String, u32>) {
+        match self.opcode {
+            OpCode::Beq | OpCode::Bne => {
+                if let ImmediateOrLabel::Label(label) = &self.immediate {
+                    let target_address = *table.get(label).expect("invalid label") as i16;
+                    let relative_address = target_address - current_address as i16 - 1;
+                    self.immediate = ImmediateOrLabel::Immediate(relative_address);
+                }
+            },
+            _ => (),
+        }
     }
 }
 
@@ -231,11 +241,11 @@ impl ConvertToBinary for JFormat {
 }
 
 impl LabelToAddress for JFormat {
-    fn label_to_address(&mut self, table: &HashMap<String, u32>) {
+    fn label_to_address(&mut self, _current_address: u32, table: &HashMap<String, u32>) {
         match self.opcode {
             OpCode::Jump | OpCode::Jal => {
                 if let AddressOrLabel::Label(label) = &self.address {
-                    let address = *table.get(label).unwrap();
+                    let address = *table.get(label).expect("invalid label");
                     self.address = AddressOrLabel::Address(address);
                 }
             },
@@ -249,5 +259,5 @@ pub trait ConvertToBinary {
 }
 
 pub trait LabelToAddress {
-    fn label_to_address(&mut self, table: &HashMap<String, u32>);
+    fn label_to_address(&mut self, current_address: u32, table: &HashMap<String, u32>);
 }
