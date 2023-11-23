@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 #[allow(dead_code)]
 #[derive(Debug, Copy, Clone)]
 pub enum RegisterName {
@@ -133,6 +135,11 @@ impl ConvertToBinary for RFormat {
     }
 }
 
+impl LabelToAddress for RFormat {
+    fn label_to_address(&mut self, table: &HashMap<String, u32>) {
+    }
+}
+
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct IFormat {
@@ -179,6 +186,11 @@ impl ConvertToBinary for IFormat {
     }
 }
 
+impl LabelToAddress for IFormat {
+    fn label_to_address(&mut self, table: &HashMap<String, u32>) {
+    }
+}
+
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct JFormat {
@@ -218,6 +230,24 @@ impl ConvertToBinary for JFormat {
     }
 }
 
+impl LabelToAddress for JFormat {
+    fn label_to_address(&mut self, table: &HashMap<String, u32>) {
+        match self.opcode {
+            OpCode::Jump | OpCode::Jal => {
+                if let AddressOrLabel::Label(label) = &self.address {
+                    let address = *table.get(label).unwrap();
+                    self.address = AddressOrLabel::Address(address);
+                }
+            },
+            _ => panic!("invalid instruction: {:?}", self),
+        }
+    }
+}
+
 pub trait ConvertToBinary {
     fn convert(&self) -> u32;
+}
+
+pub trait LabelToAddress {
+    fn label_to_address(&mut self, table: &HashMap<String, u32>);
 }

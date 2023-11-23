@@ -32,18 +32,18 @@ pub fn parse(filename: &str) -> Vec<Instruction> {
                 let code: Vec<_> = line_splited[1]
                     .split_whitespace().collect();
 
-                label_to_address.insert(label.to_string(), instructions.len());
+                label_to_address.insert(label.to_string(), instructions.len() as u32);
                 instructions.push(parse_code(&code));
             },
             _ => panic!("more than 1 colon in one line is not allowd"),
         }
     }
 
-    for (k, v) in label_to_address {
+    for (k, v) in &label_to_address {
         println!("{} {}", k, v);
     }
 
-    // parse_address(&mut instructions, &label_to_address);
+    parse_address(&mut instructions, &label_to_address);
 
     instructions
 }
@@ -390,4 +390,16 @@ fn parse_offset(offset: &str) -> (i16, RegisterName) {
     let rs = parse_register(offset[1]);
     let offset = i16::from_str(offset[0]).unwrap();
     (offset, rs)
+}
+
+use Instruction::*;
+
+fn parse_address(instructions: &mut Vec<Instruction>, table: &HashMap<String, u32>) {
+    for instruction in instructions.iter_mut() {
+        match instruction {
+            // I(iformat) => parse_address_i(iformat, label_to_address),
+            J(jformat) => jformat.label_to_address(&table),
+            _ => (),
+        }
+    }
 }
