@@ -264,25 +264,10 @@ impl Instruction for JFormat {
     }
 }
 
-pub trait Instruction {
+pub trait Instruction: std::fmt::Debug {
     fn convert(&self) -> u32;
     fn label_to_address(&mut self, current_address: u32, table: &HashMap<String, u32>);
     fn as_any(&self) -> &dyn Any;
 }
 
 use std::any::Any;
-
-impl std::fmt::Debug for dyn Instruction {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        match self.as_any().downcast_ref::<RFormat>() {
-            Some(rformat) => rformat.fmt(f),
-            _ => match self.as_any().downcast_ref::<IFormat>() {
-                Some(iformat) => iformat.fmt(f),
-                _ => match self.as_any().downcast_ref::<JFormat>() {
-                    Some(jformat) => jformat.fmt(f),
-                    _ => Ok(()),
-                },
-            },
-        }
-    }
-}
