@@ -126,10 +126,6 @@ impl Instruction for RFormat {
     }
 
     fn label_to_address(&mut self, _current_address: u32, _table: &HashMap<String, u32>) {}
-
-    fn as_any(&self) -> &dyn Any {
-        self
-    }
 }
 
 #[allow(dead_code)]
@@ -197,10 +193,6 @@ impl Instruction for IFormat {
             _ => (),
         }
     }
-
-    fn as_any(&self) -> &dyn Any {
-        self
-    }
 }
 
 #[allow(dead_code)]
@@ -258,16 +250,9 @@ impl Instruction for JFormat {
             _ => panic!("invalid instruction: {:?}", self),
         }
     }
-
-    fn as_any(&self) -> &dyn Any {
-        self
-    }
 }
 
 pub trait Instruction: std::fmt::Debug {
     fn convert(&self) -> u32;
     fn label_to_address(&mut self, current_address: u32, table: &HashMap<String, u32>);
-    fn as_any(&self) -> &dyn Any;
 }
-
-use std::any::Any;
