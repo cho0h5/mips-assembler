@@ -3,106 +3,86 @@ use std::collections::HashMap;
 #[allow(dead_code)]
 #[derive(Debug, Copy, Clone)]
 pub enum RegisterName {
-	ZERO,
-	AT,
-	V0,
-	V1,
-	A0,
-	A1,
-	A2,
-	A3,
-	T0,
-	T1,
-	T2,
-	T3,
-	T4,
-	T5,
-	T6,
-	T7,
-	S0,
-	S1,
-	S2,
-	S3,
-	S4,
-	S5,
-	S6,
-	S7,
-	T8,
-	T9,
-	K0,
-	K1,
-	GP,
-	SP,
-	FP,
-	RA,
+    ZERO,
+    AT,
+    V0,
+    V1,
+    A0,
+    A1,
+    A2,
+    A3,
+    T0,
+    T1,
+    T2,
+    T3,
+    T4,
+    T5,
+    T6,
+    T7,
+    S0,
+    S1,
+    S2,
+    S3,
+    S4,
+    S5,
+    S6,
+    S7,
+    T8,
+    T9,
+    K0,
+    K1,
+    GP,
+    SP,
+    FP,
+    RA,
 }
 
 #[allow(dead_code)]
 #[derive(Debug, Copy, Clone)]
 pub enum OpCode {
     Rformat = 0b000000,
-	Addi	= 0b001000,
-	Addiu	= 0b001001,
-	Andi	= 0b001100,
-	Beq		= 0b000100,
-	Bne		= 0b000101,
-	Jump	= 0b000010,
-	Jal		= 0b000011,
-	Lbu		= 0b100100,
-	Lhu		= 0b100101,
-	Lui		= 0b001111,
-	Lw		= 0b100011,
-	Ori		= 0b001101,
-	Slti	= 0b001010,
-	Sltiu	= 0b001011,
-	Sb		= 0b101000,
-	Sh		= 0b101001,
-	Sw		= 0b101011,
+    Addi = 0b001000,
+    Addiu = 0b001001,
+    Andi = 0b001100,
+    Beq = 0b000100,
+    Bne = 0b000101,
+    Jump = 0b000010,
+    Jal = 0b000011,
+    Lbu = 0b100100,
+    Lhu = 0b100101,
+    Lui = 0b001111,
+    Lw = 0b100011,
+    Ori = 0b001101,
+    Slti = 0b001010,
+    Sltiu = 0b001011,
+    Sb = 0b101000,
+    Sh = 0b101001,
+    Sw = 0b101011,
 }
 
 #[allow(dead_code)]
 #[derive(Debug, Copy, Clone)]
 pub enum Funct {
-	Add		= 0b100000,
-	Addu	= 0b100001,
-	And		= 0b100100,
-	Jr		= 0b001000,
-	Nor		= 0b100111,
-	Or		= 0b100101,
-	Slt		= 0b101010,
-	Sltu	= 0b101011,
-	Sll		= 0b000000,
-	Srl		= 0b000010,
-	Sub		= 0b100010,
-	Subu	= 0b100011,
-	Div		= 0b011010,
-	Divu	= 0b011011,
-	Mfhi	= 0b010000,
-	Mflo	= 0b010010,
-	Mult	= 0b011000,
-	Multu	= 0b011001,
-	Sra		= 0b000011,
-	Syscall	= 0b001100,
-}
-
-#[allow(dead_code)]
-#[derive(Debug)]
-pub enum Instruction {
-    R(RFormat),
-    I(IFormat),
-    J(JFormat),
-}
-
-use crate::Instruction::*;
-
-impl ConvertToBinary for Instruction {
-    fn convert(&self) -> u32 {
-        match self {
-            Instruction::R(f) => f.convert(),
-            Instruction::I(f) => f.convert(),
-            Instruction::J(f) => f.convert(),
-        }
-    }
+    Add = 0b100000,
+    Addu = 0b100001,
+    And = 0b100100,
+    Jr = 0b001000,
+    Nor = 0b100111,
+    Or = 0b100101,
+    Slt = 0b101010,
+    Sltu = 0b101011,
+    Sll = 0b000000,
+    Srl = 0b000010,
+    Sub = 0b100010,
+    Subu = 0b100011,
+    Div = 0b011010,
+    Divu = 0b011011,
+    Mfhi = 0b010000,
+    Mflo = 0b010010,
+    Mult = 0b011000,
+    Multu = 0b011001,
+    Sra = 0b000011,
+    Syscall = 0b001100,
 }
 
 #[allow(dead_code)]
@@ -117,13 +97,24 @@ pub struct RFormat {
 
 #[allow(dead_code)]
 impl RFormat {
-    pub fn new(funct: Funct, rs: RegisterName, rt: RegisterName,
-        rd: RegisterName, shamt: u8) -> Instruction {
-        R(RFormat {rs, rt, rd, shamt, funct})
+    pub fn new(
+        funct: Funct,
+        rs: RegisterName,
+        rt: RegisterName,
+        rd: RegisterName,
+        shamt: u8,
+    ) -> RFormat {
+        RFormat {
+            rs,
+            rt,
+            rd,
+            shamt,
+            funct,
+        }
     }
 }
 
-impl ConvertToBinary for RFormat {
+impl Instruction for RFormat {
     fn convert(&self) -> u32 {
         let mut instruction: u32;
         instruction = (self.rs as u32 & 0b11111) << 21;
@@ -133,10 +124,11 @@ impl ConvertToBinary for RFormat {
         instruction |= (self.funct as u32 & 0b111111) << 0;
         instruction
     }
-}
 
-impl LabelToAddress for RFormat {
-    fn label_to_address(&mut self, _current_address: u32, _table: &HashMap<String, u32>) {
+    fn label_to_address(&mut self, _current_address: u32, _table: &HashMap<String, u32>) {}
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 
@@ -158,19 +150,27 @@ enum ImmediateOrLabel {
 
 #[allow(dead_code)]
 impl IFormat {
-    pub fn new(opcode: OpCode, rs: RegisterName, rt: RegisterName,
-        immediate: i16) -> Instruction {
-        I(IFormat {opcode, rs, rt, immediate: ImmediateOrLabel::Immediate(immediate)})
+    pub fn new(opcode: OpCode, rs: RegisterName, rt: RegisterName, immediate: i16) -> IFormat {
+        IFormat {
+            opcode,
+            rs,
+            rt,
+            immediate: ImmediateOrLabel::Immediate(immediate),
+        }
     }
 
-    pub fn new_label(opcode: OpCode, rs: RegisterName, rt: RegisterName,
-        label: String) -> Instruction {
-        I(IFormat {opcode, rs, rt, immediate: ImmediateOrLabel::Label(label)})
+    pub fn new_label(opcode: OpCode, rs: RegisterName, rt: RegisterName, label: String) -> IFormat {
+        IFormat {
+            opcode,
+            rs,
+            rt,
+            immediate: ImmediateOrLabel::Label(label),
+        }
     }
 }
 
 #[allow(dead_code)]
-impl ConvertToBinary for IFormat {
+impl Instruction for IFormat {
     fn convert(&self) -> u32 {
         match self.immediate {
             ImmediateOrLabel::Immediate(immediate) => {
@@ -184,9 +184,7 @@ impl ConvertToBinary for IFormat {
             _ => panic!("label must be replaced to address"),
         }
     }
-}
 
-impl LabelToAddress for IFormat {
     fn label_to_address(&mut self, current_address: u32, table: &HashMap<String, u32>) {
         match self.opcode {
             OpCode::Beq | OpCode::Bne => {
@@ -195,9 +193,13 @@ impl LabelToAddress for IFormat {
                     let relative_address = target_address - current_address as i16 - 1;
                     self.immediate = ImmediateOrLabel::Immediate(relative_address);
                 }
-            },
+            }
             _ => (),
         }
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 
@@ -217,16 +219,22 @@ enum AddressOrLabel {
 
 #[allow(dead_code)]
 impl JFormat {
-    pub fn new(opcode: OpCode, address: u32) -> Instruction {
-        J(JFormat {opcode, address: AddressOrLabel::Address(address)})
+    pub fn new(opcode: OpCode, address: u32) -> JFormat {
+        JFormat {
+            opcode,
+            address: AddressOrLabel::Address(address),
+        }
     }
 
-    pub fn new_label(opcode: OpCode, label: String) -> Instruction {
-        J(JFormat {opcode, address: AddressOrLabel::Label(label)})
+    pub fn new_label(opcode: OpCode, label: String) -> JFormat {
+        JFormat {
+            opcode,
+            address: AddressOrLabel::Label(label),
+        }
     }
 }
 
-impl ConvertToBinary for JFormat {
+impl Instruction for JFormat {
     fn convert(&self) -> u32 {
         match self.address {
             AddressOrLabel::Address(address) => {
@@ -234,13 +242,11 @@ impl ConvertToBinary for JFormat {
                 instruction = (self.opcode as u32 & 0b111111) << 26;
                 instruction |= (address & 0x03FFFFFF) << 0;
                 instruction
-            },
+            }
             _ => panic!("label must be replaced to address"),
         }
     }
-}
 
-impl LabelToAddress for JFormat {
     fn label_to_address(&mut self, _current_address: u32, table: &HashMap<String, u32>) {
         match self.opcode {
             OpCode::Jump | OpCode::Jal => {
@@ -248,16 +254,35 @@ impl LabelToAddress for JFormat {
                     let address = *table.get(label).expect("invalid label");
                     self.address = AddressOrLabel::Address(address);
                 }
-            },
+            }
             _ => panic!("invalid instruction: {:?}", self),
         }
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
-pub trait ConvertToBinary {
+pub trait Instruction {
     fn convert(&self) -> u32;
+    fn label_to_address(&mut self, current_address: u32, table: &HashMap<String, u32>);
+    fn as_any(&self) -> &dyn Any;
 }
 
-pub trait LabelToAddress {
-    fn label_to_address(&mut self, current_address: u32, table: &HashMap<String, u32>);
+use std::any::Any;
+
+impl std::fmt::Debug for dyn Instruction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        match self.as_any().downcast_ref::<RFormat>() {
+            Some(rformat) => rformat.fmt(f),
+            _ => match self.as_any().downcast_ref::<IFormat>() {
+                Some(iformat) => iformat.fmt(f),
+                _ => match self.as_any().downcast_ref::<JFormat>() {
+                    Some(jformat) => jformat.fmt(f),
+                    _ => Ok(()),
+                },
+            },
+        }
+    }
 }

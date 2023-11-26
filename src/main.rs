@@ -2,11 +2,10 @@ mod instruction;
 mod parser;
 
 use crate::instruction::Instruction;
-use crate::instruction::ConvertToBinary;
 
 use crate::parser::parse;
 
-fn write_binary_file(instructions: &[Instruction]) -> Result<(), std::io::Error> {
+fn write_binary_file(instructions: &[Box<dyn Instruction>]) -> Result<(), std::io::Error> {
     use std::fs::File;
     use std::io::prelude::*;
     use std::path::Path;
@@ -26,7 +25,7 @@ fn write_binary_file(instructions: &[Instruction]) -> Result<(), std::io::Error>
             (bin >> 0) as u8,
         ];
 
-        file.write(&buf)?;
+        file.write_all(&buf)?;
     }
     Ok(())
 }
