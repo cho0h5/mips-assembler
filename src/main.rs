@@ -12,7 +12,7 @@ fn write_binary_file(instructions: &[Box<dyn Instruction>]) -> Result<(), std::i
 
     let path = Path::new("example.bin");
 
-    let mut file = File::create(&path)?;
+    let mut file = File::create(path)?;
 
     for instruction in instructions {
         let bin = instruction.convert();
@@ -22,7 +22,7 @@ fn write_binary_file(instructions: &[Box<dyn Instruction>]) -> Result<(), std::i
             (bin >> 24) as u8,
             (bin >> 16) as u8,
             (bin >> 8) as u8,
-            (bin >> 0) as u8,
+            bin as u8,
         ];
 
         file.write_all(&buf)?;
@@ -41,7 +41,7 @@ fn main() {
     println!("-----------------------------\n");
 
     println!("---- write binary file ----");
-    if let Ok(_) = write_binary_file(&instructions) {
+    if write_binary_file(&instructions).is_ok() {
         println!("---------------------------\n");
         println!("done");
     } else {

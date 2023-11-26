@@ -121,7 +121,7 @@ impl Instruction for RFormat {
         instruction |= (self.rt as u32 & 0b11111) << 16;
         instruction |= (self.rd as u32 & 0b11111) << 11;
         instruction |= (self.shamt as u32 & 0b11111) << 6;
-        instruction |= (self.funct as u32 & 0b111111) << 0;
+        instruction |= self.funct as u32 & 0b111111;
         instruction
     }
 
@@ -174,7 +174,7 @@ impl Instruction for IFormat {
                 instruction = (self.opcode as u32 & 0b111111) << 26;
                 instruction |= (self.rs as u32 & 0b11111) << 21;
                 instruction |= (self.rt as u32 & 0b11111) << 16;
-                instruction |= (immediate as u16 as u32) << 0;
+                instruction |= immediate as u16 as u32;
                 instruction
             }
             _ => panic!("label must be replaced to address"),
@@ -232,7 +232,7 @@ impl Instruction for JFormat {
             AddressOrLabel::Address(address) => {
                 let mut instruction: u32;
                 instruction = (self.opcode as u32 & 0b111111) << 26;
-                instruction |= (address & 0x03FFFFFF) << 0;
+                instruction |= address & 0x03FFFFFF;
                 instruction
             }
             _ => panic!("label must be replaced to address"),
