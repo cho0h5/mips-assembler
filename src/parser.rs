@@ -13,10 +13,10 @@ pub fn parse(filename: &str) -> Vec<Box<dyn Instruction>> {
 
     for line in read_to_string(filename).unwrap().lines() {
         let line = line.to_string();
-        let line_splited = line.split(":").collect::<Vec<&str>>();
+        let line_splited = line.split(':').collect::<Vec<&str>>();
 
         // 빈 행일 때 건너뛰기
-        if line_splited[0].len() == 0 {
+        if line_splited[0].is_empty() {
             continue;
         }
 
@@ -385,8 +385,8 @@ fn parse_offset(offset: &str) -> (i16, RegisterName) {
     (offset, rs)
 }
 
-fn parse_address(instructions: &mut Vec<Box<dyn Instruction>>, table: &HashMap<String, u32>) {
+fn parse_address(instructions: &mut [Box<dyn Instruction>], table: &HashMap<String, u32>) {
     for (i, instruction) in instructions.iter_mut().enumerate() {
-        instruction.label_to_address(i as u32, &table);
+        instruction.label_to_address(i as u32, table);
     }
 }
