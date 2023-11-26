@@ -1,3 +1,6 @@
+# MIPS Assembler
+![demo image](img/demo.png)
+
 # Build and Execute
 ## Prerequirement
 - Rust (https://www.rust-lang.org/learn/get-started)
