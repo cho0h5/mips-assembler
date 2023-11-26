@@ -114,7 +114,7 @@ fn parse_and(operand: &[&str]) -> RFormat {
 
 fn parse_jr(operand: &[&str]) -> RFormat {
     let rs = parse_register(operand[0]);
-    RFormat::new(Jr, rs, ZERO, ZERO, 0)
+    RFormat::new(Jr, rs, Zero, Zero, 0)
 }
 
 fn parse_nor(operand: &[&str]) -> RFormat {
@@ -149,14 +149,14 @@ fn parse_sll(operand: &[&str]) -> RFormat {
     let rd = parse_register(operand[0]);
     let rt = parse_register(operand[1]);
     let shamt = u8::from_str(operand[2]).unwrap();
-    RFormat::new(Sll, ZERO, rt, rd, shamt)
+    RFormat::new(Sll, Zero, rt, rd, shamt)
 }
 
 fn parse_srl(operand: &[&str]) -> RFormat {
     let rd = parse_register(operand[0]);
     let rt = parse_register(operand[1]);
     let shamt = u8::from_str(operand[2]).unwrap();
-    RFormat::new(Srl, ZERO, rt, rd, shamt)
+    RFormat::new(Srl, Zero, rt, rd, shamt)
 }
 
 fn parse_sub(operand: &[&str]) -> RFormat {
@@ -176,46 +176,46 @@ fn parse_subu(operand: &[&str]) -> RFormat {
 fn parse_div(operand: &[&str]) -> RFormat {
     let rs = parse_register(operand[0]);
     let rt = parse_register(operand[1]);
-    RFormat::new(Div, rs, rt, ZERO, 0)
+    RFormat::new(Div, rs, rt, Zero, 0)
 }
 
 fn parse_divu(operand: &[&str]) -> RFormat {
     let rs = parse_register(operand[0]);
     let rt = parse_register(operand[1]);
-    RFormat::new(Divu, rs, rt, ZERO, 0)
+    RFormat::new(Divu, rs, rt, Zero, 0)
 }
 
 fn parse_mfhi(operand: &[&str]) -> RFormat {
     let rd = parse_register(operand[0]);
-    RFormat::new(Mfhi, ZERO, ZERO, rd, 0)
+    RFormat::new(Mfhi, Zero, Zero, rd, 0)
 }
 
 fn parse_mflo(operand: &[&str]) -> RFormat {
     let rd = parse_register(operand[0]);
-    RFormat::new(Mflo, ZERO, ZERO, rd, 0)
+    RFormat::new(Mflo, Zero, Zero, rd, 0)
 }
 
 fn parse_mult(operand: &[&str]) -> RFormat {
     let rs = parse_register(operand[0]);
     let rt = parse_register(operand[1]);
-    RFormat::new(Mult, rs, rt, ZERO, 0)
+    RFormat::new(Mult, rs, rt, Zero, 0)
 }
 
 fn parse_multu(operand: &[&str]) -> RFormat {
     let rs = parse_register(operand[0]);
     let rt = parse_register(operand[1]);
-    RFormat::new(Multu, rs, rt, ZERO, 0)
+    RFormat::new(Multu, rs, rt, Zero, 0)
 }
 
 fn parse_sra(operand: &[&str]) -> RFormat {
     let rd = parse_register(operand[0]);
     let rt = parse_register(operand[1]);
     let shamt = u8::from_str(operand[2]).unwrap();
-    RFormat::new(Sra, ZERO, rt, rd, shamt)
+    RFormat::new(Sra, Zero, rt, rd, shamt)
 }
 
 fn parse_syscall() -> RFormat {
-    RFormat::new(Syscall, ZERO, ZERO, ZERO, 0)
+    RFormat::new(Syscall, Zero, Zero, Zero, 0)
 }
 
 //////// parse i format ////////
@@ -270,7 +270,7 @@ fn parse_lhu(operand: &[&str]) -> IFormat {
 fn parse_lui(operand: &[&str]) -> IFormat {
     let rt = parse_register(operand[0]);
     let immediate = i16::from_str(operand[1]).unwrap();
-    IFormat::new(Lui, ZERO, rt, immediate)
+    IFormat::new(Lui, Zero, rt, immediate)
 }
 
 fn parse_lw(operand: &[&str]) -> IFormat {
@@ -332,7 +332,7 @@ fn parse_jal(operand: &[&str]) -> JFormat {
 
 fn parse_register(register: &str) -> RegisterName {
     match register {
-        "$zero" => ZERO,
+        "$zero" => Zero,
 
         "$at" => AT,
 

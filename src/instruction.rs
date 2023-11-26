@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[allow(dead_code)]
 #[derive(Debug, Copy, Clone)]
 pub enum RegisterName {
-    ZERO,
+    Zero,
     AT,
     V0,
     V1,
