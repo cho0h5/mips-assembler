@@ -246,10 +246,10 @@ fn parse_beq(operand: &[&str]) -> IFormat {
     let rs = parse_register(operand[1]);
 
     if let Ok(offset) = operand[2].parse() {
-        IFormat::new(Bne, rs, rt, offset)
+        IFormat::new(Beq, rs, rt, offset)
     } else {
         let label = operand[2].to_string();
-        IFormat::new_label(Bne, rs, rt, label)
+        IFormat::new_label(Beq, rs, rt, label)
     }
 }
 
