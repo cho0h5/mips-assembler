@@ -244,15 +244,25 @@ fn parse_andi(operand: &[&str]) -> IFormat {
 fn parse_beq(operand: &[&str]) -> IFormat {
     let rt = parse_register(operand[0]);
     let rs = parse_register(operand[1]);
-    let label = operand[2].to_string();
-    IFormat::new_label(Beq, rs, rt, label)
+
+    if let Ok(offset) = operand[2].parse() {
+        IFormat::new(Bne, rs, rt, offset)
+    } else {
+        let label = operand[2].to_string();
+        IFormat::new_label(Bne, rs, rt, label)
+    }
 }
 
 fn parse_bne(operand: &[&str]) -> IFormat {
     let rt = parse_register(operand[0]);
     let rs = parse_register(operand[1]);
-    let label = operand[2].to_string();
-    IFormat::new_label(Bne, rs, rt, label)
+
+    if let Ok(offset) = operand[2].parse() {
+        IFormat::new(Bne, rs, rt, offset)
+    } else {
+        let label = operand[2].to_string();
+        IFormat::new_label(Bne, rs, rt, label)
+    }
 }
 
 fn parse_lbu(operand: &[&str]) -> IFormat {
