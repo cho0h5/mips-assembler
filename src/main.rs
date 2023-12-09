@@ -2,15 +2,18 @@ mod instruction;
 mod parser;
 
 use crate::instruction::Instruction;
-
 use crate::parser::parse;
 
-fn write_binary_file(instructions: &[Box<dyn Instruction>]) -> Result<(), std::io::Error> {
+use std::path::Path;
+
+fn write_binary_file(
+    instructions: &[Box<dyn Instruction>],
+    target_filename: &str,
+) -> Result<(), std::io::Error> {
     use std::fs::File;
     use std::io::prelude::*;
-    use std::path::Path;
 
-    let path = Path::new("example.bin");
+    let path = Path::new(target_filename);
 
     let mut file = File::create(path)?;
 
@@ -40,8 +43,16 @@ fn main() {
     }
     println!("-----------------------------\n");
 
+    let mut target_filename = Path::new(&filename)
+        .file_stem()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_string();
+    target_filename.push_str(".bin");
+
     println!("---- write binary file ----");
-    if write_binary_file(&instructions).is_ok() {
+    if write_binary_file(&instructions, &target_filename).is_ok() {
         println!("---------------------------\n");
         println!("done");
     } else {
