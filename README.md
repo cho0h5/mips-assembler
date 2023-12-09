@@ -16,9 +16,9 @@ mv target/release/mips-assembler .
 ```
 ## Execute
 ```sh
-./mips-assembler factorial6.s
+./mips-assembler testcase/factorial6.s
 ```
-Then, you can generate example.bin!
+Then, you can generate factorial6.bin!
 ## Run binary code
 Go to https://github.com/cho0h5/mips-simulator
 
